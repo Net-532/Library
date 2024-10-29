@@ -4,6 +4,7 @@ import model.Book;
 import model.Librarian;
 import model.Reader;
 import service.LibraryService;
+import service.DatabaseInitializer;
 import util.InputValidator;
 
 import java.util.Scanner;
@@ -13,13 +14,13 @@ public class LibraryMenu {
     private static final LibraryService libraryService = new LibraryService();
 
     public static void main(String[] args) {
+        System.out.println("Запуск ініціалізації бази даних...");
+        DatabaseInitializer.initializeDatabase();
+        System.out.println("Ініціалізація завершена.");
+
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
-        // Створення тестових даних
-        libraryService.addBook(new Book("Java для початківців", "Джон Доу", "123-1234567890"));
-        libraryService.addReader(new Reader("Аліса"));
-        libraryService.addLibrarian(new Librarian("Іван"));
 
         while (!exit) {
             System.out.println("\n=== Меню Бібліотеки ===");

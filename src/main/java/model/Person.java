@@ -2,12 +2,10 @@ package model;
 
 public class Person {
     private String name;
-    private int id;
-    private static int idCounter = 1;
+    private int id;  // No need for idCounter here
 
     public Person(String name) {
         this.name = name;
-        this.id = idCounter++;
     }
 
     public String getName() {
@@ -20,6 +18,10 @@ public class Person {
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;  // Allow setting ID after database insertion
     }
 
     @Override
