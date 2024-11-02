@@ -1,6 +1,13 @@
 package model;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "librarians")
 public class Librarian extends Person {
+
+    public Librarian() {}
 
     public Librarian(String name) {
         super(name);

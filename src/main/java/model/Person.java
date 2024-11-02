@@ -1,8 +1,19 @@
 package model;
 
-public class Person {
+import javax.persistence.*;
+
+@MappedSuperclass
+public abstract class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "name", nullable = false)
     private String name;
-    private int id;  // No need for idCounter here
+
+    public Person() {}
 
     public Person(String name) {
         this.name = name;
@@ -18,10 +29,6 @@ public class Person {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;  // Allow setting ID after database insertion
     }
 
     @Override

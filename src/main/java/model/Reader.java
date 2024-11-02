@@ -1,14 +1,21 @@
 package model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "readers")
 public class Reader extends Person {
-    private final List<Book> borrowedBooks;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "reader_id")
+    private List<Book> borrowedBooks = new ArrayList<>();
+
+    public Reader() {}
 
     public Reader(String name) {
-        super(name);  // Calls constructor from Person class
-        this.borrowedBooks = new ArrayList<>();
+        super(name);
     }
 
     public List<Book> getBorrowedBooks() {

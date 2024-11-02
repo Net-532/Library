@@ -3,297 +3,276 @@ package service;
 import model.Book;
 import model.Librarian;
 import model.Reader;
-import java.sql.*;
-import java.util.ArrayList;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.util.List;
 
 public class LibraryService {
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("LibraryPersistence");
 
     // Add a book
     public void addBook(Book book) {
-        String sql = "INSERT INTO books (title, author, isbn) VALUES (?, ?, ?)";
-
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            // Початок транзакції
-            connection.setAutoCommit(false);
-
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, book.getTitle());
-                statement.setString(2, book.getAuthor());
-                statement.setString(3, book.getIsbn());
-
-                statement.executeUpdate();
-
-                // Завершення транзакції
-                connection.commit();
-                System.out.println("Книга успішно додана до бази даних.");
-            } catch (SQLException e) {
-                // Відкат транзакції у разі помилки
-                connection.rollback();
-                System.out.println("Помилка додавання книги. Відкат транзакції.");
-                e.printStackTrace();
-            } finally {
-                // Повернення авто-коміту в попередній стан
-                connection.setAutoCommit(true);
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            em.persist(book);
+            transaction.commit();
+            System.out.println("Книга успішно додана до бази даних.");
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
-        } catch (SQLException e) {
+            System.out.println("Помилка додавання книги. Відкат транзакції.");
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Update a book
     public void updateBook(String isbn, String newTitle, String newAuthor) {
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "UPDATE books SET title = ?, author = ? WHERE isbn = ?")) {
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            Query query = em.createQuery("FROM Book WHERE isbn = :isbn");
+            query.setParameter("isbn", isbn);
+            Book book = (Book) query.getSingleResult();
 
-            statement.setString(1, newTitle);
-            statement.setString(2, newAuthor);
-            statement.setString(3, isbn);
-            int rowsUpdated = statement.executeUpdate();
-
-            if (rowsUpdated > 0) {
+            if (book != null) {
+                book.setTitle(newTitle);
+                book.setAuthor(newAuthor);
+                em.merge(book); // Use merge for updates
+                transaction.commit();
                 System.out.println("Книга успішно оновлена.");
             } else {
                 System.out.println("Книга з таким ISBN не знайдена.");
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Remove a book
     public void removeBook(String isbn) {
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "DELETE FROM books WHERE isbn = ?")) {
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            Query query = em.createQuery("DELETE FROM Book WHERE isbn = :isbn");
+            query.setParameter("isbn", isbn);
+            int result = query.executeUpdate();
 
-            statement.setString(1, isbn);
-            int rowsDeleted = statement.executeUpdate();
-
-            if (rowsDeleted > 0) {
+            if (result > 0) {
+                transaction.commit();
                 System.out.println("Книга успішно видалена.");
             } else {
                 System.out.println("Книга з таким ISBN не знайдена.");
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Show all books
     public void showBooks() {
-        try (Connection connection = DatabaseConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM books")) {
-
-            List<Book> books = new ArrayList<>();
-            while (resultSet.next()) {
-                books.add(new Book(
-                        resultSet.getString("title"),
-                        resultSet.getString("author"),
-                        resultSet.getString("isbn")
-                ));
-            }
-
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Book> books = em.createQuery("FROM Book", Book.class).getResultList();
             books.forEach(System.out::println);
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Add a reader
     public void addReader(Reader reader) {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            connection.setAutoCommit(false);  // Почати транзакцію
-
-            // Спершу додати до таблиці persons
-            try (PreparedStatement personStmt = connection.prepareStatement(
-                    "INSERT INTO persons (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
-                personStmt.setString(1, reader.getName());
-                personStmt.executeUpdate();
-
-                // Отримати згенерований person_id
-                ResultSet generatedKeys = personStmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int personId = generatedKeys.getInt(1);
-                    reader.setId(personId);  // Встановити ID для читача
-
-                    // Додати до таблиці readers
-                    try (PreparedStatement readerStmt = connection.prepareStatement(
-                            "INSERT INTO readers (person_id) VALUES (?)")) {
-                        readerStmt.setInt(1, personId);
-                        readerStmt.executeUpdate();
-                    }
-                }
-                connection.commit();  // Підтвердити транзакцію
-                System.out.println("Читача успішно додано.");
-            } catch (SQLException e) {
-                connection.rollback();  // Відкат транзакції у разі помилки
-                throw e;
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            em.persist(reader);
+            transaction.commit();
+            System.out.println("Читача успішно додано.");
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
-        } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Update a reader
-    public void updateReader(String name, String newName) {
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "UPDATE readers SET name = ? WHERE name = ?")) {
-
-            statement.setString(1, newName);
-            statement.setString(2, name);
-            int rowsUpdated = statement.executeUpdate();
-
-            if (rowsUpdated > 0) {
+    public void updateReader(int id, String newName) {
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            Reader reader = em.find(Reader.class, id);
+            if (reader != null) {
+                reader.setName(newName);
+                em.merge(reader); // Use merge for updates
+                transaction.commit();
                 System.out.println("Читача успішно оновлено.");
             } else {
-                System.out.println("Читача з таким ім'ям не знайдено.");
+                System.out.println("Читача з таким ID не знайдено.");
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Remove a reader
     public void removeReader(String name) {
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "DELETE FROM readers WHERE name = ?")) {
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            Query query = em.createQuery("DELETE FROM Reader WHERE name = :name");
+            query.setParameter("name", name);
+            int result = query.executeUpdate();
 
-            statement.setString(1, name);
-            int rowsDeleted = statement.executeUpdate();
-
-            if (rowsDeleted > 0) {
+            if (result > 0) {
+                transaction.commit();
                 System.out.println("Читача успішно видалено.");
             } else {
                 System.out.println("Читача з таким ім'ям не знайдено.");
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Show all readers
     public void showReaders() {
-        try (Connection connection = DatabaseConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM readers")) {
-
-            List<Reader> readers = new ArrayList<>();
-            while (resultSet.next()) {
-                Reader reader = new Reader(resultSet.getString("name"));
-                reader.setId(resultSet.getInt("person_id"));
-                readers.add(reader);
-            }
-
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Reader> readers = em.createQuery("FROM Reader", Reader.class).getResultList();
             readers.forEach(System.out::println);
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Add a librarian
     public void addLibrarian(Librarian librarian) {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            connection.setAutoCommit(false);  // Почати транзакцію
-
-            // Спершу додати до таблиці persons
-            try (PreparedStatement personStmt = connection.prepareStatement(
-                    "INSERT INTO persons (name) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
-                personStmt.setString(1, librarian.getName());
-                personStmt.executeUpdate();
-
-                // Отримати згенерований person_id
-                ResultSet generatedKeys = personStmt.getGeneratedKeys();
-                if (generatedKeys.next()) {
-                    int personId = generatedKeys.getInt(1);
-                    librarian.setId(personId);  // Встановити ID для бібліотекаря
-
-                    // Додати до таблиці librarians
-                    try (PreparedStatement librarianStmt = connection.prepareStatement(
-                            "INSERT INTO librarians (person_id) VALUES (?)")) {
-                        librarianStmt.setInt(1, personId);
-                        librarianStmt.executeUpdate();
-                    }
-                }
-                connection.commit();  // Підтвердити транзакцію
-                System.out.println("Бібліотекаря успішно додано.");
-            } catch (SQLException e) {
-                connection.rollback();  // Відкат транзакції у разі помилки
-                throw e;
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            em.persist(librarian);
+            transaction.commit();
+            System.out.println("Бібліотекаря успішно додано.");
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
-        } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Update a librarian
-    public void updateLibrarian(String name, String newName) {
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "UPDATE librarians SET name = ? WHERE name = ?")) {
-
-            statement.setString(1, newName);
-            statement.setString(2, name);
-            int rowsUpdated = statement.executeUpdate();
-
-            if (rowsUpdated > 0) {
+    public void updateLibrarian(int id, String newName) {
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            Librarian librarian = em.find(Librarian.class, id);
+            if (librarian != null) {
+                librarian.setName(newName);
+                em.merge(librarian); // Use merge for updates
+                transaction.commit();
                 System.out.println("Бібліотекаря успішно оновлено.");
             } else {
-                System.out.println("Бібліотекаря з таким ім'ям не знайдено.");
+                System.out.println("Бібліотекаря з таким ID не знайдено.");
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Remove a librarian
     public void removeLibrarian(String name) {
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(
-                     "DELETE FROM librarians WHERE name = ?")) {
+        EntityTransaction transaction = null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            transaction = em.getTransaction();
+            transaction.begin();
+            Query query = em.createQuery("DELETE FROM Librarian WHERE name = :name");
+            query.setParameter("name", name);
+            int result = query.executeUpdate();
 
-            statement.setString(1, name);
-            int rowsDeleted = statement.executeUpdate();
-
-            if (rowsDeleted > 0) {
+            if (result > 0) {
+                transaction.commit();
                 System.out.println("Бібліотекаря успішно видалено.");
             } else {
                 System.out.println("Бібліотекаря з таким ім'ям не знайдено.");
             }
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 
     // Show all librarians
     public void showLibrarians() {
-        try (Connection connection = DatabaseConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * FROM librarians")) {
-
-            List<Librarian> librarians = new ArrayList<>();
-            while (resultSet.next()) {
-                Librarian librarian = new Librarian(resultSet.getString("name"));
-                librarian.setId(resultSet.getInt("person_id"));
-                librarians.add(librarian);
-            }
-
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Librarian> librarians = em.createQuery("FROM Librarian", Librarian.class).getResultList();
             librarians.forEach(System.out::println);
-
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            em.close();
         }
     }
 }

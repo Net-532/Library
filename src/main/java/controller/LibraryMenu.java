@@ -21,7 +21,6 @@ public class LibraryMenu {
         Scanner scanner = new Scanner(System.in);
         boolean exit = false;
 
-
         while (!exit) {
             System.out.println("\n=== Меню Бібліотеки ===");
             System.out.println("1. Додати книгу");
@@ -59,6 +58,8 @@ public class LibraryMenu {
                 default -> System.out.println("Невірна опція.");
             }
         }
+
+        scanner.close();
     }
 
     private static void addBook(Scanner scanner) {
@@ -111,15 +112,12 @@ public class LibraryMenu {
     }
 
     private static void updateReader(Scanner scanner) {
-        System.out.println("Введіть ім'я читача для оновлення:");
-        String name = scanner.nextLine();
-        if (InputValidator.isValidName(name)) {
-            System.out.println("Введіть нове ім'я:");
-            String newName = scanner.nextLine();
-            libraryService.updateReader(name, newName);
-        } else {
-            System.out.println("Невірне ім'я.");
-        }
+        System.out.println("Введіть ID читача для оновлення:");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Очистити буфер
+        System.out.println("Введіть нове ім'я:");
+        String newName = scanner.nextLine();
+        libraryService.updateReader(id, newName);
     }
 
     private static void removeReader(Scanner scanner) {
@@ -143,15 +141,12 @@ public class LibraryMenu {
     }
 
     private static void updateLibrarian(Scanner scanner) {
-        System.out.println("Введіть ім'я бібліотекаря для оновлення:");
-        String name = scanner.nextLine();
-        if (InputValidator.isValidName(name)) {
-            System.out.println("Введіть нове ім'я:");
-            String newName = scanner.nextLine();
-            libraryService.updateLibrarian(name, newName);
-        } else {
-            System.out.println("Невірне ім'я.");
-        }
+        System.out.println("Введіть ID бібліотекаря для оновлення:");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Очистити буфер
+        System.out.println("Введіть нове ім'я:");
+        String newName = scanner.nextLine();
+        libraryService.updateLibrarian(id, newName);
     }
 
     private static void removeLibrarian(Scanner scanner) {

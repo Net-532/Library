@@ -5,17 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="762d75f6-ae7d-42d1-b9e0-1499afa608af" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/DatabaseConnection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/DatabaseInitializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/init.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/LibraryMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Book.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Librarian.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Librarian.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Reader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Reader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/LibraryService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/InputValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/util/InputValidator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/BookService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/HibernateService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/LibrarianService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/service/ReaderService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/util/HibernateUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Librarian.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Librarian.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Person.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Reader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Reader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/LibraryService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,24 +35,24 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Morph1y"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Morph1y&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Net-532/Library.git",
-    "accountId": "3acac79f-7090-4ac5-aa41-ab9f39bb895f"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Net-532/Library.git&quot;,
+    &quot;accountId&quot;: &quot;3acac79f-7090-4ac5-aa41-ab9f39bb895f&quot;
   }
-}]]></component>
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2o7f0U3EKXMlqWFqw3M3ingM84K" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -59,7 +62,7 @@
   "keyToString": {
     "Application.LibraryMenu.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/jdbc",
+    "git-widget-placeholder": "feature/hibernate",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/MK/Study/Library",
     "project.structure.last.edited": "Modules",
