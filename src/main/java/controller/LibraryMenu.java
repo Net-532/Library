@@ -6,14 +6,17 @@ import model.Reader;
 import service.LibraryService;
 import service.DatabaseInitializer;
 import util.InputValidator;
+import util.SpringContext;
 
 import java.util.Scanner;
 
 public class LibraryMenu {
 
-    private static final LibraryService libraryService = new LibraryService();
+    private static final LibraryService libraryService = SpringContext.getBean(LibraryService.class);
 
     public static void main(String[] args) {
+
+
         System.out.println("Запуск ініціалізації бази даних...");
         DatabaseInitializer.initializeDatabase();
         System.out.println("Ініціалізація завершена.");

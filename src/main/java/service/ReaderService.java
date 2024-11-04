@@ -2,11 +2,13 @@ package service;
 
 import model.Book;
 import model.Reader;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.List;
 
+@Service
 public class ReaderService extends HibernateService {
 
     public void saveReader(Reader reader) {
@@ -22,34 +24,43 @@ public class ReaderService extends HibernateService {
     }
 
     public void borrowBook(Reader reader, Book book) {
-        Transaction transaction = null;
-        try (Session session = getSession()) {
-            transaction = session.beginTransaction();
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
             reader.borrowBook(book);
-            session.update(reader);
+            entityManager.merge(reader);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction.isActive()) transaction.rollback();
             e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
     }
 
     public void returnBook(Reader reader, Book book) {
-        Transaction transaction = null;
-        try (Session session = getSession()) {
-            transaction = session.beginTransaction();
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
             reader.returnBook(book);
-            session.update(reader);
+            entityManager.merge(reader);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction.isActive()) transaction.rollback();
             e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
     }
 
     public List<Reader> getAllReaders() {
-        try (Session session = getSession()) {
-            return session.createQuery("FROM Reader", Reader.class).list();
+        EntityManager entityManager = getEntityManager();
+        try {
+            return entityManager.createQuery("FROM Reader", Reader.class).getResultList();
+        } finally {
+            entityManager.close();
         }
     }
 }

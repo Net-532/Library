@@ -5,20 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="762d75f6-ae7d-42d1-b9e0-1499afa608af" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/BookService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/HibernateService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/LibrarianService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/service/ReaderService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/util/HibernateUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/util/SpringContext.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Book.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Librarian.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Librarian.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Person.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Reader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Reader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/BookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/HibernateService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/HibernateService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/LibrarianService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/LibrarianService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/LibraryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/LibraryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/ReaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ReaderService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +57,7 @@
   "keyToString": {
     "Application.LibraryMenu.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/hibernate",
+    "git-widget-placeholder": "feature/spring",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/MK/Study/Library",
     "project.structure.last.edited": "Modules",

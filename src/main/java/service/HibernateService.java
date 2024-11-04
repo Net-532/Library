@@ -1,49 +1,61 @@
 package service;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 
 public class HibernateService {
 
-    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+    private static final EntityManagerFactory entityManagerFactory =
+            Persistence.createEntityManagerFactory("LibraryPersistence");
 
-    protected static Session getSession() {
-        return sessionFactory.openSession();
+    protected static EntityManager getEntityManager() {
+        return entityManagerFactory.createEntityManager();
     }
 
     public <T> void save(T entity) {
-        Transaction transaction = null;
-        try (Session session = getSession()) {
-            transaction = session.beginTransaction();
-            session.save(entity);
+        EntityTransaction transaction = null;
+        EntityManager entityManager = getEntityManager();
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(entity);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null && transaction.isActive()) transaction.rollback();
             e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
     }
 
     public <T> T findById(Class<T> clazz, int id) {
-        try (Session session = getSession()) {
-            return session.get(clazz, id);
+        EntityManager entityManager = getEntityManager();
+        try {
+            return entityManager.find(clazz, id);
+        } finally {
+            entityManager.close();
         }
     }
 
     public <T> void delete(T entity) {
-        Transaction transaction = null;
-        try (Session session = getSession()) {
-            transaction = session.beginTransaction();
-            session.delete(entity);
+        EntityTransaction transaction = null;
+        EntityManager entityManager = getEntityManager();
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction != null && transaction.isActive()) transaction.rollback();
             e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
     }
 
-    public void closeSessionFactory() {
-        sessionFactory.close();
+    public void closeEntityManagerFactory() {
+        entityManagerFactory.close();
     }
 }

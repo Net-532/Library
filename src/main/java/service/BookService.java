@@ -1,11 +1,13 @@
 package service;
 
 import model.Book;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.util.List;
 
+@Service
 public class BookService extends HibernateService {
 
     public void saveBook(Book book) {
@@ -21,8 +23,11 @@ public class BookService extends HibernateService {
     }
 
     public List<Book> getAllBooks() {
-        try (Session session = getSession()) {
-            return session.createQuery("FROM Book", Book.class).list();
+        EntityManager entityManager = getEntityManager();
+        try {
+            return entityManager.createQuery("FROM Book", Book.class).getResultList();
+        } finally {
+            entityManager.close();
         }
     }
 }

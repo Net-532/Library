@@ -1,12 +1,14 @@
 package service;
 
 import model.Librarian;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Service
 public class LibrarianService extends HibernateService {
 
     public void saveLibrarian(Librarian librarian) {
@@ -22,9 +24,12 @@ public class LibrarianService extends HibernateService {
     }
 
     public List<Librarian> getAllLibrarians() {
-        try (Session session = getSession()) {
-            Query<Librarian> query = session.createQuery("FROM Librarian", Librarian.class);
+        EntityManager entityManager = getEntityManager();
+        try {
+            TypedQuery<Librarian> query = entityManager.createQuery("FROM Librarian", Librarian.class);
             return query.getResultList();
+        } finally {
+            entityManager.close();
         }
     }
 }
