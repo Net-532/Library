@@ -1,7 +1,6 @@
 D:\MK\Study\Library\src\main\java\model\Book.java
 D:\MK\Study\Library\src\main\java\model\Person.java
 D:\MK\Study\Library\src\main\java\model\Librarian.java
-D:\MK\Study\Library\src\main\java\service\DatabaseConnection.java
 D:\MK\Study\Library\src\main\java\util\InputValidator.java
 D:\MK\Study\Library\src\main\java\controller\BookController.java
 D:\MK\Study\Library\src\main\java\service\BookService.java
@@ -9,7 +8,6 @@ D:\MK\Study\Library\src\main\java\service\LibraryService.java
 D:\MK\Study\Library\src\main\java\service\LibrarianService.java
 D:\MK\Study\Library\src\main\java\controller\LibraryMenu.java
 D:\MK\Study\Library\src\main\java\model\Reader.java
-D:\MK\Study\Library\src\main\java\service\DatabaseInitializer.java
 D:\MK\Study\Library\src\main\java\util\SpringContext.java
 D:\MK\Study\Library\src\main\java\service\HibernateService.java
 D:\MK\Study\Library\src\main\java\util\HibernateUtil.java

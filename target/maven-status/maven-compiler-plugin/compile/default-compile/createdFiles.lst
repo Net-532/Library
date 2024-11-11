@@ -1,13 +1,11 @@
 model\Librarian.class
 controller\LibraryMenu.class
-service\DatabaseInitializer.class
 util\InputValidator.class
 model\Reader.class
 service\BookService.class
 service\HibernateService.class
 model\Person.class
 service\LibrarianService.class
-service\DatabaseConnection.class
 service\ReaderService.class
 util\HibernateUtil.class
 controller\BookController.class
