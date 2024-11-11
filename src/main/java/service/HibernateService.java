@@ -15,19 +15,7 @@ public class HibernateService {
     }
 
     public <T> void save(T entity) {
-        EntityTransaction transaction = null;
-        EntityManager entityManager = getEntityManager();
-        try {
-            transaction = entityManager.getTransaction();
-            transaction.begin();
-            entityManager.persist(entity);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) transaction.rollback();
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
+        Transaction(em -> em.persist(entity));
     }
 
     public <T> T findById(Class<T> clazz, int id) {
@@ -39,20 +27,32 @@ public class HibernateService {
         }
     }
 
+    public <T> void update(T entity) {
+        Transaction(entityManager -> entityManager.merge(entity));
+    }
+
     public <T> void delete(T entity) {
-        EntityTransaction transaction = null;
+        Transaction(entityManager -> entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity)));
+    }
+
+    private void Transaction(EntityManagerOperation operation) {
         EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction = entityManager.getTransaction();
             transaction.begin();
-            entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
+            operation.accept(entityManager);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) transaction.rollback();
+            if (transaction.isActive()) transaction.rollback();
             e.printStackTrace();
         } finally {
             entityManager.close();
         }
+    }
+
+    @FunctionalInterface
+    protected interface EntityManagerOperation {
+        void accept(EntityManager entityManager);
     }
 
     public void closeEntityManagerFactory() {
