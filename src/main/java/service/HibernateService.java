@@ -55,7 +55,4 @@ public class HibernateService {
         }
     }
 
-    public void closeEntityManagerFactory() {
-        entityManagerFactory.close();
-    }
 }
