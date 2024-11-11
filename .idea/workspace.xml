@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="762d75f6-ae7d-42d1-b9e0-1499afa608af" name="Changes" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/LibraryMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/BookService.java" afterDir="false" />
@@ -16,6 +17,11 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/service/ReaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/ReaderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/init.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/init.sql" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+>>>>>>> d558ca590ccd2af9d41bfb13c0d7bf508ff8291d
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +51,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
@@ -59,7 +65,11 @@
   &quot;keyToString&quot;: {
     &quot;Application.LibraryMenu.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+<<<<<<< HEAD
     &quot;git-widget-placeholder&quot;: &quot;#3 on feature/spring&quot;,
+=======
+    &quot;git-widget-placeholder&quot;: &quot;feature/spring&quot;,
+>>>>>>> d558ca590ccd2af9d41bfb13c0d7bf508ff8291d
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;D:/MK/Study/Library&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
@@ -98,6 +108,17 @@
       <updated>1730225312592</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
