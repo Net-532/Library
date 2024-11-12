@@ -4,18 +4,21 @@ import model.Book;
 import model.Librarian;
 import model.Reader;
 import service.LibraryService;
-import service.DatabaseInitializer;
-import util.InputValidator;
 
+import util.InputValidator;
+import util.SpringContext;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class LibraryMenu {
 
-    private static final LibraryService libraryService = new LibraryService();
+    private static final LibraryService libraryService = SpringContext.getBean(LibraryService.class);
 
     public static void main(String[] args) {
+
         System.out.println("Запуск ініціалізації бази даних...");
-        DatabaseInitializer.initializeDatabase();
+
         System.out.println("Ініціалізація завершена.");
 
         Scanner scanner = new Scanner(System.in);
@@ -45,21 +48,36 @@ public class LibraryMenu {
                 case 1 -> addBook(scanner);
                 case 2 -> updateBook(scanner);
                 case 3 -> removeBook(scanner);
-                case 4 -> libraryService.showBooks();
+                case 4 -> showBooks();
                 case 5 -> addReader(scanner);
                 case 6 -> updateReader(scanner);
                 case 7 -> removeReader(scanner);
-                case 8 -> libraryService.showReaders();
+                case 8 -> showReaders();
                 case 9 -> addLibrarian(scanner);
                 case 10 -> updateLibrarian(scanner);
                 case 11 -> removeLibrarian(scanner);
-                case 12 -> libraryService.showLibrarians();
+                case 12 -> showLibrarians();
                 case 13 -> exit = true;
                 default -> System.out.println("Невірна опція.");
             }
         }
 
         scanner.close();
+    }
+
+    private static void showBooks() {
+        List<Book> books = libraryService.showBooks();
+        books.forEach(book -> System.out.println(book.getTitle() + " - " + book.getAuthor() + " - " + book.getIsbn()));
+    }
+
+    private static void showReaders() {
+        List<Reader> readers = libraryService.showReaders();
+        readers.forEach(reader -> System.out.println(reader.getName()));
+    }
+
+    private static void showLibrarians() {
+        List<Librarian> librarians = libraryService.showLibrarians();
+        librarians.forEach(librarian -> System.out.println(librarian.getName()));
     }
 
     private static void addBook(Scanner scanner) {
@@ -80,82 +98,71 @@ public class LibraryMenu {
     private static void updateBook(Scanner scanner) {
         System.out.println("Введіть ISBN книги для оновлення:");
         String isbn = scanner.nextLine();
-        if (InputValidator.isValidIsbn(isbn)) {
+        Book book = libraryService.showBooks().stream().filter(b -> b.getIsbn().equals(isbn)).findFirst().orElse(null);
+        if (book != null) {
             System.out.println("Введіть нову назву:");
-            String newTitle = scanner.nextLine();
+            book.setTitle(scanner.nextLine());
             System.out.println("Введіть нового автора:");
-            String newAuthor = scanner.nextLine();
-            libraryService.updateBook(isbn, newTitle, newAuthor);
+            book.setAuthor(scanner.nextLine());
+            libraryService.updateBook(book);
         } else {
-            System.out.println("Невірний формат ISBN.");
+            System.out.println("Книга з таким ISBN не знайдена.");
         }
     }
 
     private static void removeBook(Scanner scanner) {
         System.out.println("Введіть ISBN книги для видалення:");
         String isbn = scanner.nextLine();
-        if (InputValidator.isValidIsbn(isbn)) {
-            libraryService.removeBook(isbn);
-        } else {
-            System.out.println("Невірний формат ISBN.");
-        }
+        libraryService.removeBook(isbn);
     }
 
     private static void addReader(Scanner scanner) {
         System.out.println("Введіть ім'я читача:");
         String name = scanner.nextLine();
-        if (InputValidator.isValidName(name)) {
-            libraryService.addReader(new Reader(name));
-        } else {
-            System.out.println("Невірне ім'я.");
-        }
+        libraryService.addReader(new Reader(name));
     }
 
     private static void updateReader(Scanner scanner) {
-        System.out.println("Введіть ID читача для оновлення:");
-        int id = scanner.nextInt();
-        scanner.nextLine(); // Очистити буфер
-        System.out.println("Введіть нове ім'я:");
-        String newName = scanner.nextLine();
-        libraryService.updateReader(id, newName);
+        System.out.println("Введіть ім'я читача для оновлення:");
+        String name = scanner.nextLine();
+        Reader reader = libraryService.showReaders().stream().filter(r -> r.getName().equals(name)).findFirst().orElse(null);
+        if (reader != null) {
+            System.out.println("Введіть нове ім'я:");
+            reader.setName(scanner.nextLine());
+            libraryService.updateReader(reader);
+        } else {
+            System.out.println("Читача з таким ім'ям не знайдено.");
+        }
     }
 
     private static void removeReader(Scanner scanner) {
         System.out.println("Введіть ім'я читача для видалення:");
         String name = scanner.nextLine();
-        if (InputValidator.isValidName(name)) {
-            libraryService.removeReader(name);
-        } else {
-            System.out.println("Невірне ім'я.");
-        }
+        libraryService.removeReader(name);
     }
 
     private static void addLibrarian(Scanner scanner) {
         System.out.println("Введіть ім'я бібліотекаря:");
         String name = scanner.nextLine();
-        if (InputValidator.isValidName(name)) {
-            libraryService.addLibrarian(new Librarian(name));
-        } else {
-            System.out.println("Невірне ім'я.");
-        }
+        libraryService.addLibrarian(new Librarian(name));
     }
 
     private static void updateLibrarian(Scanner scanner) {
-        System.out.println("Введіть ID бібліотекаря для оновлення:");
-        int id = scanner.nextInt();
-        scanner.nextLine(); // Очистити буфер
-        System.out.println("Введіть нове ім'я:");
-        String newName = scanner.nextLine();
-        libraryService.updateLibrarian(id, newName);
+        System.out.println("Введіть ім'я бібліотекаря для оновлення:");
+        String name = scanner.nextLine();
+        Librarian librarian = libraryService.showLibrarians().stream().filter(l -> l.getName().equals(name)).findFirst().orElse(null);
+        if (librarian != null) {
+            System.out.println("Введіть нове ім'я:");
+            librarian.setName(scanner.nextLine());
+            libraryService.updateLibrarian(librarian);
+        } else {
+            System.out.println("Бібліотекаря з таким ім'ям не знайдено.");
+        }
     }
 
     private static void removeLibrarian(Scanner scanner) {
         System.out.println("Введіть ім'я бібліотекаря для видалення:");
         String name = scanner.nextLine();
-        if (InputValidator.isValidName(name)) {
-            libraryService.removeLibrarian(name);
-        } else {
-            System.out.println("Невірне ім'я.");
-        }
+        libraryService.removeLibrarian(name);
     }
 }

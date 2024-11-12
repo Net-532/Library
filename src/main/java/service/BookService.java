@@ -1,28 +1,33 @@
 package service;
 
 import model.Book;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
+@Service
 public class BookService extends HibernateService {
 
-    public void saveBook(Book book) {
-        save(book);
+    public Book findByIsbn(String isbn) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            TypedQuery<Book> query = entityManager.createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class);
+            query.setParameter("isbn", isbn);
+            return query.getSingleResult();
+        } finally {
+            entityManager.close();
+        }
     }
 
-    public Book getBookById(int id) {
-        return findById(Book.class, id);
-    }
-
-    public void deleteBook(Book book) {
-        delete(book);
-    }
-
-    public List<Book> getAllBooks() {
-        try (Session session = getSession()) {
-            return session.createQuery("FROM Book", Book.class).list();
+    public List<Book> findAll() {
+        EntityManager entityManager = getEntityManager();
+        try {
+            TypedQuery<Book> query = entityManager.createQuery("SELECT b FROM Book b", Book.class);
+            return query.getResultList();
+        } finally {
+            entityManager.close();
         }
     }
 }

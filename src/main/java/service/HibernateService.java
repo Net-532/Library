@@ -1,49 +1,61 @@
 package service;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 
 public class HibernateService {
 
-    private static final SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+    private static final EntityManagerFactory entityManagerFactory =
+            Persistence.createEntityManagerFactory("LibraryPersistence");
 
-    protected static Session getSession() {
-        return sessionFactory.openSession();
+    protected static EntityManager getEntityManager() {
+        return entityManagerFactory.createEntityManager();
     }
 
     public <T> void save(T entity) {
-        Transaction transaction = null;
-        try (Session session = getSession()) {
-            transaction = session.beginTransaction();
-            session.save(entity);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-        }
+        Transaction(em -> em.persist(entity));
     }
 
     public <T> T findById(Class<T> clazz, int id) {
-        try (Session session = getSession()) {
-            return session.get(clazz, id);
+        EntityManager entityManager = getEntityManager();
+        try {
+            return entityManager.find(clazz, id);
+        } finally {
+            entityManager.close();
         }
+    }
+
+    public <T> void update(T entity) {
+        Transaction(entityManager -> entityManager.merge(entity));
     }
 
     public <T> void delete(T entity) {
-        Transaction transaction = null;
-        try (Session session = getSession()) {
-            transaction = session.beginTransaction();
-            session.delete(entity);
+        Transaction(entityManager -> entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity)));
+    }
+
+    private void Transaction(EntityManagerOperation operation) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            operation.accept(entityManager);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
+            if (transaction.isActive()) transaction.rollback();
             e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
     }
 
-    public void closeSessionFactory() {
-        sessionFactory.close();
+    @FunctionalInterface
+    protected interface EntityManagerOperation {
+        void accept(EntityManager entityManager);
+    }
+
+    public void closeEntityManagerFactory() {
+        entityManagerFactory.close();
     }
 }
