@@ -3,13 +3,15 @@ package service;
 import model.Book;
 import model.Librarian;
 import model.Reader;
+import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.util.List;
-
+@Service
 public class LibraryService {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("LibraryPersistence");
 
